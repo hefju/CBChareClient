@@ -5,6 +5,7 @@ import (
     "log"
     "net"
     "net/rpc/jsonrpc"
+    "github.com/hefju/CBChareClient/myconfig"
 )
 
 type Args struct {
@@ -17,7 +18,7 @@ type Reply struct {
 func main() {
     //fmt.Println("from server:")
 
-    client, err := net.Dial("tcp", "127.0.0.1:8081")
+    client, err := net.Dial("tcp",myconfig.RemoteIpt+":8081")
     if err != nil {
         log.Fatal("dialing:", err)
     }
