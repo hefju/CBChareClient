@@ -15,13 +15,6 @@ import (
 	"time"
 )
 
-//type Args struct {
-//    Who string
-//}
-//type Reply struct {
-//    Message string
-//}
-
 func main() {
 
 	//初始化,加载上次
@@ -29,46 +22,33 @@ func main() {
 	app := appconfig.App
 
 	//fmt.Println( app.LasttimeExec)
-	ticker := time.NewTicker(time.Second * 3) //time.Minute*30)
+	ticker := time.NewTicker(time.Minute*30)//time.Second * 5)
 	for t := range ticker.C {
-		if t.Hour() == 17 { //0凌晨时段,触发事件
+		if t.Hour() == 0 { //0凌晨时段,触发事件
 			//检查上传状态,如果还未上传就触发上传操作
-			fmt.Println("CheckUploadStatus")
+			//fmt.Println("CheckUploadStatus")
 			if app.CheckUploadStatus(t) {
-				fmt.Println("updateBills")
+				//fmt.Println("updateBills")
 				updateBills(t)
-				app.LasttimeExec = t
+				app.LasttimeExec = t //更新上次执行时间
 			}
 		}
-		fmt.Println(t)
+		//fmt.Println(t)
 	}
 
-	//fmt.Println("from server:")
 
-	//    client, err := net.Dial("tcp",myconfig.RemoteIpt+":8081")
-	//    if err != nil {
-	//        log.Fatal("dialing:", err)
-	//    }
-	//
-	//    args := &Args{"caonima"}
-	//    reply := new(Reply)
-	//    c := jsonrpc.NewClient(client)
-	//    err = c.Call("Hello.Say", args, reply)
-	//    if err != nil {
-	//        log.Fatal("mygod:", err)
-	//    }
-	//    fmt.Println("from server:", reply)
 }
 
 func updateBills(t time.Time) {
 
-	t = t.AddDate(0, 0, -1)
-	fmt.Println("updateBills time:", t)
-	return
+	t = t.AddDate(0, 0, -1)//设置时间为当前时间的前一天
+//	fmt.Println("updateBills time:", t)
+//	return
 
-	bills := models.GetChargeListByDate(t)
+	bills := models.GetChargeListByDate(t)  //获取一天的数据
 	bill := bills[0]
-
+	fmt.Println("bill: ",bill)
+   // return
 	url := "http://localhost:8083/uploadone"
 	jsonStr, _ := json.Marshal(bill)
 
