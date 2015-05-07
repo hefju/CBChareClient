@@ -22,9 +22,9 @@ func main() {
 	app := appconfig.App
 
 	//fmt.Println( app.LasttimeExec)
-	ticker := time.NewTicker(time.Minute*30)//time.Second * 5)
+	ticker := time.NewTicker(time.Second * 5)//time.Minute*30)//time.Second * 5)
 	for t := range ticker.C {
-		if t.Hour() == 0 { //0凌晨时段,触发事件
+		if t.Hour() == 10 { //0凌晨时段,触发事件
 			//检查上传状态,如果还未上传就触发上传操作
 			//fmt.Println("CheckUploadStatus")
 			if app.CheckUploadStatus(t) {
@@ -46,11 +46,18 @@ func updateBills(t time.Time) {
 //	return
 
 	bills := models.GetChargeListByDate(t)  //获取一天的数据
-	bill := bills[0]
-	fmt.Println("bill: ",bill)
-   // return
-	url := "http://localhost:8083/uploadone"
-	jsonStr, _ := json.Marshal(bill)
+    url := "http://localhost:8083/upload"
+    jsonStr, _ := json.Marshal(bills)
+
+//    bill := bills[0]
+//    fmt.Println("bill: ",bill)
+//    url := "http://localhost:8083/uploadone"
+//    jsonStr, _ := json.Marshal(bill)
+
+
+
+
+
 
 	//var jsonStr = []byte(`{"title":"Buy cheese and bread for breakfast."}`)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
@@ -65,7 +72,7 @@ func updateBills(t time.Time) {
 	defer resp.Body.Close()
 
 	fmt.Println("response Status:", resp.Status)
-	fmt.Println("response Headers:", resp.Header)
+	//fmt.Println("response Headers:", resp.Header)
 	body, _ := ioutil.ReadAll(resp.Body)
 	fmt.Println("response Body:", string(body))
 }
