@@ -28,17 +28,17 @@ func main() {
     email:=tasker.EmailSend{}
 
 	//定时执行
-	ticker := time.NewTicker(time.Second*2) //time.Minute*30)//time.Second * 5)
+	ticker := time.NewTicker(time.Minute*10) //time.Minute*30)//time.Second * 5)
 	for t := range ticker.C {
         switch t.Hour() {
-            case 0: //0凌晨时段,触发事件
+            case 3: //凌晨3点时,触发事件
             if task.CheckUploadStatus(t) {
                 // fmt.Println("CheckUploadStatus")
                 task.UploadBills(t)
                 task.SetLastExecuteTime(t)//更新上次执行时间
                 //task.LasttimeExec = t
             }
-            case 18://21  晚上9点钟,发送准备信息. 如果没有收到就要检查了
+            case 21://21  晚上9点钟,发送准备信息. 如果没有收到就要检查了
             if email.CheckUploadStatus(t){
                 email.SendEmail()
                 email.SetLastExecuteTime(t)
