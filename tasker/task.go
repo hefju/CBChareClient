@@ -41,6 +41,7 @@ func (uploader *ChareUpload)UploadBills(t time.Time){
         defer func() {
             if r := recover(); r != nil { //r的信息有什么用?还不如直接输出err
                 logger.Error("发送失败,", err)//  fmt.Println("发送失败,", r, err)
+                jutool.SendEmail("充电数据上传失败","上传时间:"+t.Format("2006-01-02 15:04:05")+" "+err.Error())//上传失败也发个email通知我
             }
         }()
     }
@@ -49,6 +50,7 @@ func (uploader *ChareUpload)UploadBills(t time.Time){
     body, _ := ioutil.ReadAll(resp.Body)
     //fmt.Println("response Body:", string(body))
     logger.Info("上传成功,",t.Format("2006-01-02 15:04:05"), string(body))
+    jutool.SendEmail("充电数据上传成功","上传时间:"+t.Format("2006-01-02 15:04:05")+" "+string(body))//上传成功也发个email通知我
 }
 
 //检测上传状态, 如果上次更新日期跟今次的更新日期一样就不需要上传了, 如果更新日期不相符就返回true, 执行更新
