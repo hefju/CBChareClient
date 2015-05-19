@@ -19,7 +19,7 @@ import (
 	//"log"
     "github.com/hefju/CBChareClient/myconfig"
     "github.com/donnie4w/go-logger/logger"
-    "github.com/hefju/CBChareClient/jutool"
+   // "github.com/hefju/CBChareClient/jutool"
 )
 
 func main() {
@@ -70,7 +70,7 @@ func main() {
 //发送状态报告
 func sentStatus(t time.Time) {
     url :=myconfig.ReportAddr  // "http://localhost:8083/upload" // "http://localhost:8083/upload"  192.168.1.200
-    report:=models.StatusReport{From:myconfig.MyName,FromTime:time.Now().String(),Title:"状态报告",Content:"I'm still alive"}
+    report:=models.StatusReport{From:myconfig.MyName,FromTime:time.Now(),Title:"状态报告",Content:"I'm still alive"}
     jsonStr, _ := json.Marshal(report)
 
     req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))

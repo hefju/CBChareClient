@@ -18,7 +18,7 @@ func init() {
 	if err != nil {
 		log.Fatalln("xorm create error", err)
 	}
-	engine.ShowSQL = true
+	//engine.ShowSQL = true
 	engine.SetMapper(core.SameMapper{})
 	// engine.CreateTables(new(tp_charge_billing))
 	err = engine.Sync2(new(Tp_charge_billing)) //, new(Group))
@@ -76,7 +76,7 @@ type Tp_charge_billing struct {
 type StatusReport struct  {
     Id int64
     From string      //发送人
-    FromTime string  //发送的时间
+    FromTime time.Time  //发送的时间
     Title string //标题(分类: 健康,统计的,)
     Content string //详细内容
 }
