@@ -17,6 +17,9 @@ import (
 	"time"
    // "github.com/donnie4w/go-logger/logger"
 	//"log"
+    "github.com/hefju/CBChareClient/myconfig"
+    "github.com/donnie4w/go-logger/logger"
+    "github.com/hefju/CBChareClient/jutool"
 )
 
 func main() {
@@ -31,7 +34,7 @@ func main() {
 	ticker := time.NewTicker(time.Minute*10) //time.Minute*30)//time.Second * 5)
 	for t := range ticker.C {
         switch t.Hour() {
-            case 3: //凌晨3点时,触发事件
+            case 4: //凌晨4点时,触发事件
             if task.CheckUploadStatus(t) {
                 // fmt.Println("CheckUploadStatus")
                 task.UploadBills(t)
@@ -43,6 +46,8 @@ func main() {
                 email.SendEmail()
                 email.SetLastExecuteTime(t)
             }
+            default:
+            sentStatus(t)
            // email.LasttimeExec
 
            // fmt.Println("ticker17")
@@ -60,6 +65,34 @@ func main() {
 //		fmt.Println(t)
 	}
 
+}
+
+//发送状态报告
+func sentStatus(t time.Time) {
+    url :=myconfig.ReportAddr  // "http://localhost:8083/upload" // "http://localhost:8083/upload"  192.168.1.200
+    report:=models.StatusReport{From:myconfig.MyName,FromTime:time.Now().String(),Title:"状态报告",Content:"I'm still alive"}
+    jsonStr, _ := json.Marshal(report)
+
+    req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
+    req.Header.Set("X-Custom-Header", "myvalue")
+    req.Header.Set("Content-Type", "application/json")
+
+    client := &http.Client{}
+    resp, err := client.Do(req)
+    if err != nil {
+        //panic(err)//发送数据失败, 程序不要死啊. panic就完啦
+        defer func() {
+            if r := recover(); r != nil { //r的信息有什么用?还不如直接输出err
+                logger.Error("状态报告失败,", err)//  fmt.Println("发送失败,", r, err)
+               // jutool.SendEmail("状态报告失败","报告时间:"+t.Format("2006-01-02 15:04:05")+" "+err.Error())//上传失败也发个email通知我
+            }
+        }()
+    }
+    defer resp.Body.Close()
+
+    body, _ := ioutil.ReadAll(resp.Body)
+    //fmt.Println("response Body:", string(body))
+    logger.Info("状态报成功,",t.Format("2006-01-02 15:04:05"), string(body))
 }
 
 func updateBills(t time.Time) {

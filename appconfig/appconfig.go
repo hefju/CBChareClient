@@ -4,6 +4,7 @@ import (
     //"time"
     "github.com/donnie4w/go-logger/logger"
     "os"
+    "github.com/hefju/CBChareClient/myconfig"
 )
 
 //var App AppConfig
@@ -15,8 +16,9 @@ func init() {
 
 func LoadConfig() {
     //logger.SetConsole(false)//默认是输出到控制台的, 所以logger.SetConsole(true) 写不写都无所谓
-    os.MkdirAll("D:/Programs/CBChareClient/log", 0777)    //os.MkdirAll("./log", 0777)                  //创建log文件夹, 用来存放日志
-    logger.SetRollingDaily("D:/Programs/CBChareClient/log", "test.log") //如果没有log文件夹, 需要新增文件夹
+   // os.MkdirAll("D:/Programs/CBChareClient/log", 0777)    //os.MkdirAll("./log", 0777)                  //创建log文件夹, 用来存放日志
+    os.MkdirAll(myconfig.AppRootPath+"/log", 0777)
+    logger.SetRollingDaily(myconfig.AppRootPath+"/log", "test.log") //如果没有log文件夹, 需要新增文件夹
     logger.SetLevel(logger.DEBUG)
 }
 
