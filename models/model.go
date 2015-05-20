@@ -76,7 +76,7 @@ type Tp_charge_billing struct {
 type StatusReport struct  {
     Id int64
     From string      //发送人
-    FromTime time.Time  //发送的时间
+    FromTime int64  //发送的时间
     Title string //标题(分类: 健康,统计的,)
     Content string //详细内容
 }
